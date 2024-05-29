@@ -1,17 +1,212 @@
-const router = require('express').Router();
+const express = require('express');
+const mysql2 = require('../database/connect').pool;
+const router = express.Router();
+const multer = require('multer');
 
-const driverController = require('../controllers/driverController');
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    if (file.fieldname === 'endereco') {
+      cb(null, './uploads/endereco/');
+    }
+    if (file.fieldname === 'antt') {
+      cb(null, './uploads/antt/');
+    }
+    if (file.fieldname === 'crlv') {
+      cb(null, './uploads/crlv/');
+    }
+    if (file.fieldname === 'cnh') {
+      cb(null, './uploads/cnh/');
+    }
+  },
+  filename: function (req, file, cb) {
+    cb(
+      null,
+      new Date().toISOString() +
+        '-' +
+        file.fieldname +
+        (file.mimetype === 'image/jpeg'
+          ? '.jpg'
+          : file.mimetype === 'image/png'
+          ? '.png'
+          : '.pdf')
+    );
+  },
+});
+const upload = multer({ storage: storage });
 
-router
-  .route('/driver')
-  .get((req, res) => driverController.getAll(req, res));
+// Post
+router.post(
+  '/driver',
+  upload.fields([
+    { name: 'endereco', maxCount: 1 },
+    { name: 'antt', maxCount: 1 },
+    { name: 'crlv', maxCount: 1 },
+    { name: 'cnh', maxCount: 1 },
+  ]),
 
-router
-  .route('/driver')
-  .post((req, res) => driverController.create(req, res));
+  (req, res, next) => {
+    const { nome, telefone, cpf, caminhao, carroceria, conta_id } = req.body;
+    const endereco = req.files.endereco[0].path;
+    const antt = req.files.antt[0].path;
+    const crlv = req.files.crlv[0].path;
+    const cnh = req.files.cnh[0].path;
+    mysql2.getConnection((err, conn) => {
+      if (err) {
+        returnres.status(500).send({ error: err });
+      }
+      conn.query(
+        `INSERT INTO Driver(nome,telefone,cpf,endereco,antt,crlv,cnh,caminhao,carroceria,conta_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [
+          nome,
+          telefone,
+          cpf,
+          endereco,
+          antt,
+          crlv,
+          cnh,
+          caminhao,
+          carroceria,
+          conta_id,
+        ],
+        (error, result, field) => {
+          conn.release();
+          if (error) {
+            return res.status(500).send({
+              error: error,
+              response: null,
+            });
+          }
+          return res.status(201).send({
+            mensagem: 'Motorista inserido com sucesso',
+            id_driver: result.insertId,
+          });
+        }
+      );
+    });
+  }
+);
 
-router
-  .route('/driver/:id')
-  .get((req, res) => driverController.getById(req, res));
+// GetAll
+router.get('/driver', (req, res, next) => {
+  mysql2.getConnection((err, conn) => {
+    if (err) {
+      returnres.status(500).send({ error: err });
+    }
+    conn.query('SELECT * FROM Driver', (error, result, field) => {
+      conn.release();
+      if (error) {
+        return res.status(500).send({ error: error });
+      }
+      return res.status(200).send({
+        response: result,
+      });
+    });
+  });
+});
+
+// GetById
+router.get('/driver/:id', (req, res, next) => {
+  mysql2.getConnection((err, conn) => {
+    if (err) {
+      returnres.status(500).send({ error: err });
+    }
+    conn.query(
+      'SELECT * FROM Driver where driver_id = ?;',
+      [req.params.id],
+      (error, result, field) => {
+        conn.release();
+        if (error) {
+          return res.status(500).send({ error: error });
+        }
+        return res.status(200).send({
+          response: result,
+        });
+      }
+    );
+  });
+});
+
+// patch
+router.patch('/driver/:id', (req, res, next) => {
+  const {
+    nome,
+    telefone,
+    cpf,
+    endereco,
+    antt,
+    crlv,
+    cnh,
+    caminhao,
+    carroceria,
+    conta_id,
+  } = req.body;
+
+  mysql2.getConnection((err, conn) => {
+    if (err) {
+      returnres.status(500).send({ error: err });
+    }
+    conn.query(
+      `UPDATE Driver
+      SET nome = ?,
+      telefone = ?,
+      cpf = ?,
+      endereco = ?,
+      antt = ?,
+      crlv = ?,
+      cnh = ?,
+      caminhao = ?,
+      carroceria = ?,
+      conta_id = ?
+      WHERE driver_id = ?`,
+      [
+        nome,
+        telefone,
+        cpf,
+        endereco,
+        antt,
+        crlv,
+        cnh,
+        caminhao,
+        carroceria,
+        conta_id,
+        req.params.id,
+      ],
+      (error, result, field) => {
+        conn.release();
+        if (error) {
+          return res.status(500).send({
+            error: error,
+            response: null,
+          });
+        }
+        return res.status(202).send({
+          mensagem: 'Motorista Editado com sucesso',
+        });
+      }
+    );
+  });
+});
+
+// delete
+router.delete('/driver/:id', (req, res, next) => {
+  mysql2.getConnection((err, conn) => {
+    if (err) {
+      returnres.status(500).send({ error: err });
+    }
+    conn.query(
+      'DELETE FROM Driver where driver_id = ?;',
+      [req.params.id],
+      (error, result, field) => {
+        conn.release();
+        if (error) {
+          return res.status(500).send({ error: error });
+        }
+        return res.status(202).send({
+          mensagem: 'Motorista deletado com sucesso',
+        });
+      }
+    );
+  });
+});
 
 module.exports = router;
