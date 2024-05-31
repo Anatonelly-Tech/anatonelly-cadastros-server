@@ -45,7 +45,17 @@ router.post(
   ]),
 
   (req, res, next) => {
-    const { nome, telefone, cpf, caminhao, carroceria, conta_id } = req.body;
+    const {
+      nome,
+      telefone,
+      cpf,
+      caminhao,
+      carroceria,
+      banco,
+      agencia,
+      conta,
+      pix,
+    } = req.body;
     const endereco = req.files.endereco[0].path;
     const antt = req.files.antt[0].path;
     const crlv = req.files.crlv[0].path;
@@ -55,7 +65,7 @@ router.post(
         returnres.status(500).send({ error: err });
       }
       conn.query(
-        `INSERT INTO Driver(nome,telefone,cpf,endereco,antt,crlv,cnh,caminhao,carroceria,conta_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        `INSERT INTO Motorista(nome,telefone,cpf,endereco,antt,crlv,cnh,caminhao,carroceria,banco, agencia, conta, pix) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?)`,
         [
           nome,
           telefone,
@@ -66,7 +76,10 @@ router.post(
           cnh,
           caminhao,
           carroceria,
-          conta_id,
+          banco,
+          agencia,
+          conta,
+          pix,
         ],
         (error, result, field) => {
           conn.release();
@@ -92,7 +105,7 @@ router.get('/driver', (req, res, next) => {
     if (err) {
       returnres.status(500).send({ error: err });
     }
-    conn.query('SELECT * FROM Driver', (error, result, field) => {
+    conn.query('SELECT * FROM Motorista', (error, result, field) => {
       conn.release();
       if (error) {
         return res.status(500).send({ error: error });
@@ -111,7 +124,7 @@ router.get('/driver/:id', (req, res, next) => {
       returnres.status(500).send({ error: err });
     }
     conn.query(
-      'SELECT * FROM Driver where driver_id = ?;',
+      'SELECT * FROM Motorista where motorista_id = ?;',
       [req.params.id],
       (error, result, field) => {
         conn.release();
@@ -138,7 +151,10 @@ router.patch('/driver/:id', (req, res, next) => {
     cnh,
     caminhao,
     carroceria,
-    conta_id,
+    banco,
+    agencia,
+    conta,
+    pix,
   } = req.body;
 
   mysql2.getConnection((err, conn) => {
@@ -146,7 +162,7 @@ router.patch('/driver/:id', (req, res, next) => {
       returnres.status(500).send({ error: err });
     }
     conn.query(
-      `UPDATE Driver
+      `UPDATE Motorista
       SET nome = ?,
       telefone = ?,
       cpf = ?,
@@ -156,8 +172,11 @@ router.patch('/driver/:id', (req, res, next) => {
       cnh = ?,
       caminhao = ?,
       carroceria = ?,
-      conta_id = ?
-      WHERE driver_id = ?`,
+      banco = ?,
+      agencia = ?,
+      conta = ?,
+      pix = ?
+      WHERE motorista_id = ?`,
       [
         nome,
         telefone,
@@ -168,7 +187,10 @@ router.patch('/driver/:id', (req, res, next) => {
         cnh,
         caminhao,
         carroceria,
-        conta_id,
+        banco,
+        agencia,
+        conta,
+        pix,
         req.params.id,
       ],
       (error, result, field) => {
