@@ -91,7 +91,7 @@ router.post(
           }
           return res.status(201).send({
             mensagem: 'Motorista inserido com sucesso',
-            id_driver: result.insertId,
+            motorista_id: result.insertId,
           });
         }
       );
