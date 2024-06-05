@@ -56,7 +56,7 @@ router.get('/route', (req, res, next) => {
 });
 
 // GetById
-router.get('/route/:id', (req, res, next) => {
+router.get('/route/getById/:id', (req, res, next) => {
   mysql2.getConnection((error, conn) => {
     if (error) {
       return res.status(500).send({ error: error });
@@ -105,7 +105,7 @@ router.get('/route/driver/:id', (req, res, next) => {
       `select m.nome, r.origem, r.destino from Motorista m
         join RotaMotorista rd on m.motorista_id = rd.motorista_id
         join Rota r on rd.rota_id = r.rota_id
-        WHERE motorista_id = ?;`,
+        WHERE m.motorista_id = ?;`,
       [req.params.id],
       (error, result, field) => {
         conn.release();
@@ -130,7 +130,7 @@ router.get('/route/destination', (req, res, next) => {
       `select m.nome, r.origem, r.destino from Motorista m
           join RotaMotorista rd on m.motorista_id = rd.motorista_id
           join Rota r on rd.rota_id = r.rota_id
-          WHERE destino = ?;`,
+          WHERE r.destino = ?;`,
       [destino],
       (error, result, field) => {
         conn.release();
@@ -146,7 +146,6 @@ router.get('/route/destination', (req, res, next) => {
 // Motorista por origem
 router.get('/route/origin', (req, res, next) => {
   const { origem } = req.body;
-
   mysql2.getConnection((error, conn) => {
     if (error) {
       return res.status(500).send({ error: error });
@@ -155,7 +154,7 @@ router.get('/route/origin', (req, res, next) => {
       `select m.nome, r.origem, r.destino from Motorista m
           join RotaMotorista rd on m.motorista_id = rd.motorista_id
           join Rota r on rd.rota_id = r.rota_id
-          WHERE origem = ?;`,
+          WHERE r.origem = ?;`,
       [origem],
       (error, result, field) => {
         conn.release();
@@ -180,7 +179,7 @@ router.get('/route/origin/destination', (req, res, next) => {
       `select m.nome, r.origem, r.destino from Motorista m
           join RotaMotorista rd on m.motorista_id = rd.motorista_id
           join Rota r on rd.rota_id = r.rota_id
-          WHERE origem = ? AND destino = ?;`,
+          WHERE r.origem = ? AND r.destino = ?;`,
       [origem, destino],
       (error, result, field) => {
         conn.release();
