@@ -102,7 +102,7 @@ router.get('/route/driver/:id', (req, res, next) => {
       return res.status(500).send({ error: error });
     }
     conn.query(
-      `select m.nome, r.origem, r.destino from Motorista m
+      `select m.nome, m.telefone, r.origem, r.destino from Motorista m
         join RotaMotorista rd on m.motorista_id = rd.motorista_id
         join Rota r on rd.rota_id = r.rota_id
         WHERE m.motorista_id = ?;`,
@@ -127,7 +127,7 @@ router.get('/route/destination', (req, res, next) => {
       return res.status(500).send({ error: error });
     }
     conn.query(
-      `select m.nome, r.origem, r.destino from Motorista m
+      `select m.nome, m.telefone, r.origem, r.destino from Motorista m
           join RotaMotorista rd on m.motorista_id = rd.motorista_id
           join Rota r on rd.rota_id = r.rota_id
           WHERE r.destino = ?;`,
@@ -151,7 +151,7 @@ router.get('/route/origin', (req, res, next) => {
       return res.status(500).send({ error: error });
     }
     conn.query(
-      `select m.nome, r.origem, r.destino from Motorista m
+      `select m.nome, m.telefone, r.origem, r.destino from Motorista m
           join RotaMotorista rd on m.motorista_id = rd.motorista_id
           join Rota r on rd.rota_id = r.rota_id
           WHERE r.origem = ?;`,
@@ -176,7 +176,7 @@ router.get('/route/origin/destination', (req, res, next) => {
       return res.status(500).send({ error: error });
     }
     conn.query(
-      `select m.nome, r.origem, r.destino from Motorista m
+      `select m.nome, m.telefone, r.origem, r.destino from Motorista m
           join RotaMotorista rd on m.motorista_id = rd.motorista_id
           join Rota r on rd.rota_id = r.rota_id
           WHERE r.origem = ? AND r.destino = ?;`,
