@@ -27,7 +27,7 @@ router.post('/login', (req, res, next) => {
           },
           process.env.JWT_KEY,
           {
-            expiresIn: '120s',
+            expiresIn: '1h',
           }
         );
         return res.status(200).send({ Login: true, token, result });
