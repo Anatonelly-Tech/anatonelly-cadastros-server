@@ -21,7 +21,8 @@ const storage = multer.diskStorage({
   filename: function (req, file, cb) {
     cb(
       null,
-      +'-' +
+      new Date().toISOString().replace(/:/g, '-') +
+        '-' +
         file.fieldname +
         (file.mimetype === 'image/jpeg'
           ? '.jpg'
