@@ -119,15 +119,15 @@ router.get('/route/driver/:id', (req, res, next) => {
 });
 
 // Motorista por destino
-router.get('/route/destination', (req, res, next) => {
-  const { destino } = req.body;
+router.get('/route/destination/:destino', (req, res, next) => {
+  const { destino } = req.params;
 
   mysql2.getConnection((error, conn) => {
     if (error) {
       return res.status(500).send({ error: error });
     }
     conn.query(
-      `select m.nome, m.telefone, r.origem, r.destino from Motorista m
+      `select  m.motorista_id, m.nome, m.telefone, r.origem, r.destino from Motorista m
           join RotaMotorista rd on m.motorista_id = rd.motorista_id
           join Rota r on rd.rota_id = r.rota_id
           WHERE r.destino = ?;`,
@@ -144,14 +144,14 @@ router.get('/route/destination', (req, res, next) => {
 });
 
 // Motorista por origem
-router.get('/route/origin', (req, res, next) => {
-  const { origem } = req.body;
+router.get('/route/origin/:origem', (req, res, next) => {
+  const { origem } = req.params;
   mysql2.getConnection((error, conn) => {
     if (error) {
       return res.status(500).send({ error: error });
     }
     conn.query(
-      `select m.nome, m.telefone, r.origem, r.destino from Motorista m
+      `select  m.motorista_id, m.nome, m.telefone, r.origem, r.destino from Motorista m
           join RotaMotorista rd on m.motorista_id = rd.motorista_id
           join Rota r on rd.rota_id = r.rota_id
           WHERE r.origem = ?;`,
@@ -168,15 +168,14 @@ router.get('/route/origin', (req, res, next) => {
 });
 
 // Motorista por origem e destino
-router.get('/route/origin/destination', (req, res, next) => {
+router.post('/route/origin/destination', (req, res, next) => {
   const { origem, destino } = req.body;
-
   mysql2.getConnection((error, conn) => {
     if (error) {
       return res.status(500).send({ error: error });
     }
     conn.query(
-      `select m.nome, m.telefone, r.origem, r.destino from Motorista m
+      `select  m.motorista_id, m.nome, m.telefone, r.origem, r.destino from Motorista m
           join RotaMotorista rd on m.motorista_id = rd.motorista_id
           join Rota r on rd.rota_id = r.rota_id
           WHERE r.origem = ? AND r.destino = ?;`,

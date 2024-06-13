@@ -21,8 +21,7 @@ const storage = multer.diskStorage({
   filename: function (req, file, cb) {
     cb(
       null,
-      new Date().toISOString() +
-        '-' +
+      +'-' +
         file.fieldname +
         (file.mimetype === 'image/jpeg'
           ? '.jpg'
@@ -225,6 +224,29 @@ router.delete('/driver/:id', (req, res, next) => {
         }
         return res.status(202).send({
           mensagem: 'Motorista deletado com sucesso',
+        });
+      }
+    );
+  });
+});
+
+// Gett All Drivers with routes
+router.get('/drivers/routes', (req, res, next) => {
+  mysql2.getConnection((err, conn) => {
+    if (err) {
+      returnres.status(500).send({ error: err });
+    }
+    conn.query(
+      `select m.motorista_id, m.nome, m.telefone, r.origem, r.destino from Motorista m
+        join RotaMotorista rd on m.motorista_id = rd.motorista_id
+        join Rota r on rd.rota_id = r.rota_id;`,
+      (error, result, field) => {
+        conn.release();
+        if (error) {
+          return res.status(500).send({ error: error });
+        }
+        return res.status(200).send({
+          response: result,
         });
       }
     );
