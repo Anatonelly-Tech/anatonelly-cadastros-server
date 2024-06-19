@@ -64,7 +64,7 @@ router.post('/contract/driver', (req, res, next) => {
 
   return res.status(200).send({
     response: 'Contrato gerado com sucesso',
-    path: `localhost:3030/docs/${date}-${nome}.docx`,
+    path: `http://localhost:3030/docs/${date}-${nome}.docx`,
   });
 });
 
@@ -135,7 +135,7 @@ router.post('/contract/boss', (req, res, next) => {
 
   return res.status(200).send({
     response: 'Contrato gerado com sucesso',
-    path: `localhost:3030/docs/${date}-${contratante}.docx`,
+    path: `http://localhost:3030/docs/${date}-${contratante}.docx`,
   });
 });
 
