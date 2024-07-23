@@ -61,4 +61,8 @@ router.get('/checkAuth', verifyJwt, (req, res, next) => {
     .send({ auth: 'Authorized', message: 'Authentication success' });
 });
 
+
+
+
+
 module.exports = router;

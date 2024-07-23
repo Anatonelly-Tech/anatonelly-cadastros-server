@@ -45,7 +45,9 @@ router.post(
   ]),
 
   (req, res, next) => {
+    const {} = req.params;
     const {
+      usuario_id,
       nome,
       telefone,
       cpf,
@@ -65,8 +67,9 @@ router.post(
         returnres.status(500).send({ error: err });
       }
       conn.query(
-        `INSERT INTO Motorista(nome,telefone,cpf,endereco,antt,crlv,cnh,caminhao,carroceria,banco, agencia, conta, pix) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?,?)`,
+        `INSERT INTO Motorista(usuario_id,nome,telefone,cpf,endereco,antt,crlv,cnh,caminhao,carroceria,banco,agencia,conta,pix) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [
+          usuario_id,
           nome,
           telefone,
           cpf,
