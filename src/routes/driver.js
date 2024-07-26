@@ -57,6 +57,7 @@ router.post(
       agencia,
       conta,
       pix,
+      criado_em,
     } = req.body;
     const endereco = req.files.endereco[0].path;
     const antt = req.files.antt[0].path;
@@ -67,7 +68,7 @@ router.post(
         returnres.status(500).send({ error: err });
       }
       conn.query(
-        `INSERT INTO Motorista(usuario_id,nome,telefone,cpf,endereco,antt,crlv,cnh,caminhao,carroceria,banco,agencia,conta,pix) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        `INSERT INTO Motorista(usuario_id,nome,telefone,cpf,endereco,antt,crlv,cnh,caminhao,carroceria,banco,agencia,conta,pix,criado_em) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [
           usuario_id,
           nome,
@@ -83,6 +84,7 @@ router.post(
           agencia,
           conta,
           pix,
+          criado_em,
         ],
         (error, result, field) => {
           conn.release();
