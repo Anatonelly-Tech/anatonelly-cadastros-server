@@ -64,7 +64,7 @@ router.post('/contract/driver', (req, res, next) => {
 
   return res.status(200).send({
     response: 'Contrato gerado com sucesso',
-    path: `https://anatonelly-cadastros-server.onrender.com/docs/${date}-${nome}.docx`,
+    path: `https://anatonelly-cadastros-server-sdwt.onrender.com/docs/${date}-${nome}.docx`,
   });
 });
 
@@ -135,7 +135,7 @@ router.post('/contract/boss', (req, res, next) => {
 
   return res.status(200).send({
     response: 'Contrato gerado com sucesso',
-    path: `https://anatonelly-cadastros-server.onrender.com/docs/${date}-${contratante}.docx`,
+    path: `https://anatonelly-cadastros-server-sdwt.onrender.com/docs/${date}-${contratante}.docx`,
   });
 });
 
