@@ -122,6 +122,27 @@ router.get('/driver', (req, res, next) => {
   });
 });
 
+//GetALLUnique
+router.get('/driver/unique', (req, res, next) => {
+  mysql2.getConnection((err, conn) => {
+    if (err) {
+      return res.status(500).send({ error: err });
+    }
+    conn.query(
+      'SELECT COUNT(DISTINCT nome) as total FROM Motorista',
+      (error, result, field) => {
+        conn.release();
+        if (error) {
+          return res.status(500).send({ error: error });
+        }
+        return res.status(200).send({
+          response: result,
+        });
+      }
+    );
+  });
+});
+
 // GetById
 router.get('/driver/:id', (req, res, next) => {
   mysql2.getConnection((err, conn) => {
